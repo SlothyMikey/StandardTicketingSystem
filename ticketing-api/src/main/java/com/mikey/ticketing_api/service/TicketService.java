@@ -1,13 +1,11 @@
 package com.mikey.ticketing_api.service;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.mikey.ticketing_api.dto.TicketRequest;
+import com.mikey.ticketing_api.exception.ResourceNotFoundException;
 import com.mikey.ticketing_api.model.Ticket;
 import com.mikey.ticketing_api.repository.TicketRepository;
 
@@ -32,7 +30,7 @@ public class TicketService {
 
     public Ticket getTicketById(Long ticketId) {
         return ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Ticket not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket", ticketId));
     }
 
     public Ticket updateTicket(Long ticketId, TicketRequest request) {
@@ -43,7 +41,7 @@ public class TicketService {
 
     public void deleteTicket(Long ticketId) {
         if (!ticketRepository.existsById(ticketId)) {
-            throw new ResponseStatusException(NOT_FOUND, "Ticket not found");
+            throw new ResourceNotFoundException("Ticket", ticketId);
         }
         ticketRepository.deleteById(ticketId);
     }
